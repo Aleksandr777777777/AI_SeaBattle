@@ -1,0 +1,27 @@
+.board {
+    display: inline-block;
+    border: 2px solid #333;
+    margin: 10px;
+  }
+  
+  .board-row {
+    display: flex;
+  }
+  
+  .board-cell {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    user-select: none; /* чтобы текст не выделялся */
+    font-weight: bold;
+    background-color: #f0f0f0;
+  }
+  
+  .board-cell:hover {
+    background-color: #ddd;
+  }
+  
