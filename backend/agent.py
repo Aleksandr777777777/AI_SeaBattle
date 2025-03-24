@@ -148,6 +148,8 @@ class RLAgent:
             return (r,c)
 
         # 2. Иначе идём по паттерну
+        print('Pattern_index', self.pattern_index)
+        print('Current_pattern', self.current_pattern)
         while self.pattern_index < len(self.current_pattern):
             r, c = self.current_pattern[self.pattern_index]
             self.pattern_index += 1

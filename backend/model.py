@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-class DQNNetwork(nn.Model):
+class DQNNetwork(nn.Module):
     """
     Пример простой fully-connected сети для Q-функции:
     Вход: вектор состояния (3 фичи: [кол-во непроверенных клеток, кол-во оставшихся палуб, id_текущей_стратегии])
