@@ -78,3 +78,29 @@ def make_move(game_id: str, move: MoveRequest):
         "game_over": game.game_over,
         "winner": game.winner
     }
+    
+@app.post("/game/{game_id}/ai_move")
+def ai_move(game_id: str):
+    """Сделать ход агента (игрок 2)."""
+    if game_id not in games:
+        raise HTTPException(status_code=404, detail="Game not found")
+    
+    game = games[game_id]
+    if game.game_over:
+        return {"message": "Game is over"}
+
+    move_result = game.ai_move()
+    if move_result is None:
+        return {"message": "No AI move performed"}
+    
+    row, col, result = move_result
+    return {
+        "board1": game.board1,
+        "board2": game.board2,
+        "current_player": game.current_player,
+        "ships1": game.ships1,
+        "ships2": game.ships2,
+        "game_over": game.game_over,
+        "winner": game.winner,
+        "ai_move": {"row": row, "col": col, "result": result}
+    }
