@@ -6,6 +6,7 @@ import torch.optim as optim
 
 from model import DQNNetwork
 from strategies import ALL_PATTERNS
+from ship_finisher import update_finishing_targets
 
 class ReplayBuffer:
     def __init__(self, capacity=10000):
@@ -53,6 +54,8 @@ class RLAgent:
         self.epsilon_end = epsilon_end
         self.epsilon_decay = epsilon_decay
         self.step_count = 0
+        self.current_hits = []
+
 
         self.policy_net = DQNNetwork(state_dim, action_dim)
         self.target_net = DQNNetwork(state_dim, action_dim)
@@ -83,6 +86,8 @@ class RLAgent:
         self.pattern_index = 0
         self.shots_done.clear()
         self.to_finish.clear()
+        self.current_hits.clear()
+
 
     def get_state(self, game):
         """
@@ -148,8 +153,8 @@ class RLAgent:
             return (r,c)
 
         # 2. Иначе идём по паттерну
-        print('Pattern_index', self.pattern_index)
-        print('Current_pattern', self.current_pattern)
+        # print('Pattern_index', self.pattern_index)
+        # print('Current_pattern', self.current_pattern)
         while self.pattern_index < len(self.current_pattern):
             r, c = self.current_pattern[self.pattern_index]
             self.pattern_index += 1
@@ -165,31 +170,16 @@ class RLAgent:
 
     def on_shot_result(self, row, col, result, game):
         """
-        Вызывается после выстрела, чтобы агент мог учесть попадание/промах/потопление
-        и добавить соседние клетки для добивания.
+        Обработка результата выстрела.
         """
-        if result == "hit":
-            # Добавляем соседние клетки
-            neighbors = self.get_adjacent_cells(row, col, game.board2)
-            for n in neighbors:
-                if n not in self.shots_done and n not in self.to_finish:
-                    self.to_finish.append(n)
+        self.current_hits, self.to_finish = update_finishing_targets(self.current_hits, self.to_finish, result, row, col, game.board2)
+        
+        if self.to_finish:
+            print(f"[DEBUG] Next targets to finish: {self.to_finish}")
         elif result == "sink":
             # Можно сразу убрать клетки вокруг потопленного корабля
             # или переключить стратегию (через select_action)
             pass
-
-    def get_adjacent_cells(self, row, col, board):
-        """
-        Ищем 4 соседние клетки, где board[r][c] == 0 или 1 (неизвестно).
-        """
-        candidates = []
-        for (dr, dc) in [(1,0), (-1,0), (0,1), (0,-1)]:
-            nr, nc = row+dr, col+dc
-            if 0 <= nr < 10 and 0 <= nc < 10:
-                if board[nr][nc] in [0,1]:  
-                    candidates.append((nr,nc))
-        return candidates
 
     def remember(self, state, action, reward, next_state, done):
         """
