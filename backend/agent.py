@@ -6,7 +6,8 @@ import torch.optim as optim
 
 from model import DQNNetwork
 from strategies import ALL_PATTERNS
-from ship_finisher import update_finishing_targets
+from finisher import ShipFinisher
+#from ship_finisher import update_finishing_targets
 
 class ReplayBuffer:
     def __init__(self, capacity=10000):
@@ -55,6 +56,9 @@ class RLAgent:
         self.epsilon_decay = epsilon_decay
         self.step_count = 0
         self.current_hits = []
+        self.shots_done = set() 
+        self.finisher = ShipFinisher()
+
 
 
         self.policy_net = DQNNetwork(state_dim, action_dim)
@@ -147,10 +151,13 @@ class RLAgent:
         Если есть раненый корабль, "добиваем". Иначе идём по паттерну.
         """
         # 1. Добиваем
-        if self.to_finish:
-            r, c = self.to_finish.pop()
-            self.shots_done.add((r,c))
-            return (r,c)
+        next_shot = self.finisher.get_next_shot()
+        if next_shot:
+            if next_shot not in self.shots_done:  # Защита от дублей
+                self.shots_done.add(next_shot)
+                return next_shot
+            else:
+                return self.get_next_shot(game)
 
         # 2. Иначе идём по паттерну
         # print('Pattern_index', self.pattern_index)
@@ -172,14 +179,21 @@ class RLAgent:
         """
         Обработка результата выстрела.
         """
-        self.current_hits, self.to_finish = update_finishing_targets(self.current_hits, self.to_finish, result, row, col, game.board2)
-        
-        if self.to_finish:
-            print(f"[DEBUG] Next targets to finish: {self.to_finish}")
-        elif result == "sink":
-            # Можно сразу убрать клетки вокруг потопленного корабля
-            # или переключить стратегию (через select_action)
-            pass
+        self.shots_done.add((row, col))  # Всегда добавляем выстрел в трекер
+        if result in ["hit", "sink"]:
+            self.finisher.add_shot_result(row, col, result, board_size=10)
+        if result == "sink":
+            self.finisher.reset()
+            # Можно добавить очистку клеток вокруг потопленного корабля
+            self._mark_sunk_ship_neighbors(row, col, game)
+    
+    def _mark_sunk_ship_neighbors(self, row, col, game):
+        """Помечает клетки вокруг потопленного корабля как 'использованные'."""
+        for dr in [-1, 0, 1]:
+            for dc in [-1, 0, 1]:
+                nr, nc = row + dr, col + dc
+                if 0 <= nr < 10 and 0 <= nc < 10:
+                    self.shots_done.add((nr, nc))
 
     def remember(self, state, action, reward, next_state, done):
         """
