@@ -1,0 +1,23 @@
+:root {
+    --transition-start: #004e92;
+    --transition-end: #01094e;
+  }
+  
+  .transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    pointer-events: none;
+  }
+  
+  .transition-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.98;
+  }
