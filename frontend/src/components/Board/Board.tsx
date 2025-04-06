@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/Board.css";
+import "./Board.css";
 
 interface BoardProps {
   boardData: number[][];
@@ -9,9 +9,21 @@ interface BoardProps {
 
 const Board: React.FC<BoardProps> = ({ boardData, onCellClick, isClickable }) => {
   return (
-    <div className="board">
+    <div className="board-container">
+      {/* Буквы для столбцов */}
+      <div className="column-labels">
+        <div className="label-corner"></div>
+        {[...Array(boardData[0]?.length || 10)].map((_, i) => (
+          <div key={`col-${i}`} className="column-label">
+            {String.fromCharCode(65 + i)}
+          </div>
+        ))}
+      </div>
+      
+      {/* Основное поле с номерами строк */}
       {boardData.map((row, rowIndex) => (
         <div className="board-row" key={rowIndex}>
+          <div className="row-label">{rowIndex + 1}</div>
           {row.map((cellValue, colIndex) => {
             let cellClass = "cell";
             if (cellValue === 1) cellClass += " cell-ship";
