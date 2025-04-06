@@ -1,0 +1,12 @@
+.pixel-ships {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.9; /* Увеличили прозрачность */
+    mix-blend-mode: screen;
+    filter: brightness(1.2); /* Добавили яркости */
+  }
