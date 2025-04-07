@@ -1,0 +1,64 @@
+.game-header {
+  background-color: #515de0;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+  border-bottom: 3px solid #515de0;
+}
+
+.game-title {
+  margin: 0;
+  font-size: 2rem;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.game-meta {
+  margin-top: 1rem;
+  padding: 0.8rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+.game-id {
+  font-family: monospace;
+  font-size: 0.9rem;
+  opacity: 0.8;
+  margin-bottom: 0.5rem;
+}
+
+.turn-indicator {
+  padding: 0.6rem 1rem;
+  margin: 0.5rem auto;
+  border-radius: 8px;
+  font-size: 1rem;
+  max-width: 500px;
+}
+
+.your-turn {
+  background-color: rgba(76, 175, 80, 0.2);
+  color: #a5d6a7;
+  border-left: 4px solid #4caf50;
+}
+
+.ai-turn {
+  background-color: rgba(255, 152, 0, 0.2);
+  color: #ffcc80;
+  border-left: 4px solid #ff9800;
+}
+
+.ships-info {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.player-ships {
+  color: #81d4fa;
+}
+
+.ai-ships {
+  color: #ffab91;
+}

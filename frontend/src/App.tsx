@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Header from "./components/Header";
-import GameStatus from "./components/GameStatus";
-import Board from "./components/Board";
+import Header from "./components/Header/Header";
+import Board from "./components/Board/Board";
+import MainMenu from "./components/MainMenu/MainMenu";
 import "./styles/App.css";
 
 const API_URL = "http://localhost:8000";
 
 interface GameState {
   game_id: string;
-  board1?: number[][]; // делаем опциональными, чтобы учесть, что могут отсутствовать
+  board1?: number[][];
   board2?: number[][];
   current_player?: number;
   ships1?: number;
@@ -20,7 +20,6 @@ interface GameState {
 }
 
 const App: React.FC = () => {
-  console.log("App is rendering!");
   const [gameId, setGameId] = useState<string | null>(null);
   const [gameState, setGameState] = useState<GameState | null>(null);
 
@@ -51,7 +50,6 @@ const App: React.FC = () => {
 
   const handleCellClick = async (row: number, col: number, boardOwner: number) => {
     if (!gameId || !gameState) return;
-    // Если current_player равен boardOwner, значит, выстрел по своему полю не выполняется.
     if (gameState.current_player === boardOwner) {
       console.log("Cannot shoot on your own board!");
       return;
@@ -74,66 +72,52 @@ const App: React.FC = () => {
     }
   };
 
-  // Если игра ещё не создана
+  // Главный рендер
   if (!gameId) {
-    return (
-      <div className="app-container">
-        <Header />
-        <button onClick={createGame}>New Game (Human vs Agent)</button>
-      </div>
-    );
+    return <MainMenu onCreateGame={createGame} />;
   }
 
-  // Если состояние игры не загружено или сервер вернул сообщение (например, игра окончена)
   if (!gameState || !gameState.board1 || !gameState.board2) {
     return (
       <div className="app-container">
         <Header />
-        {gameState?.message ? (
-          <p>{gameState.message}</p>
-        ) : (
-          <p>Loading game state...</p>
-        )}
+        {gameState?.message ? <p>{gameState.message}</p> : <p>Loading...</p>}
       </div>
     );
   }
 
-  const { current_player, board1, board2, ships1, ships2, game_over, winner } = gameState;
+  const {current_player, board1, board2, ships1, ships2, game_over, winner} = gameState;
 
   return (
     <div className="app-container">
-      <Header />
-      <GameStatus
+      <Header 
         gameId={gameId}
-        currentPlayer={current_player!}
-        gameOver={game_over!}
-        winner={winner!}
+        currentPlayer={current_player}
+        ships1={ships1}
+        ships2={ships2}
       />
-      <div className="boards">
-        <div style={{ display: "flex", justifyContent: "space-around" }}>
-          {/* Поле игрока 1 (Human) — не кликабельно */}
-          <div>
-            <h3>Player 1 (Human) (Ships: {ships1})</h3>
-            <Board
-              boardData={board1}
-              onCellClick={() => {}}
-              isClickable={false}
-            />
-          </div>
-          {/* Поле игрока 2 (Agent) — кликабельно, если сейчас ход human */}
-          <div>
-            <h3>Player 2 (Agent) (Ships: {ships2})</h3>
-            <Board
-              boardData={board2}
-              onCellClick={(r, c) => handleCellClick(r, c, 2)}
-              isClickable={current_player === 1 && !game_over}
-            />
-          </div>
+      
+      <div className="boards-container">
+        <div className="player-board">
+          <Board boardData={board1} onCellClick={() => {}} isClickable={false} />
+        </div>
+  
+        <div className="player-board">
+          <Board
+            boardData={board2}
+            onCellClick={(r, c) => handleCellClick(r, c, 2)}
+            isClickable={current_player === 1 && !game_over}
+          />
         </div>
       </div>
-      {/* Если сейчас ход агента */}
+  
       {current_player === 2 && !game_over && (
-        <button onClick={handleAIMove}>Agent Move</button>
+      <div className="button-container">
+        <button className="wave-button" onClick={handleAIMove}>
+          <span>🌊 AI Move 🌊</span>
+          <div className="wave"></div>
+        </button>
+      </div>
       )}
     </div>
   );

@@ -1,0 +1,79 @@
+.board-container {
+  display: inline-block;
+  margin: 20px;
+}
+
+.board {
+  display: inline-block;
+  border: 2px solid #333;
+}
+
+.board-row {
+  display: flex;
+}
+
+.cell {
+  width: 30px;
+  height: 30px;
+  border: 1px solid #aaa;
+  background-color: #b3e5fc; /* Светло-голубой для воды */
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cell:hover {
+  background-color: #81d4fa;
+}
+
+.cell-ship {
+  background-color: #78909c; /* Серый для кораблей */
+}
+
+.cell-hit {
+  background-color: #f44336; /* Красный для попаданий */
+  position: relative;
+}
+
+.cell-hit::after {
+  content: "✖";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  font-size: 18px;
+}
+
+.cell-miss {
+  background-color: #e1f5fe; /* Очень светлый голубой для промахов */
+  position: relative;
+}
+
+.cell-miss::after {
+  content: "•";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #01579b;
+  font-size: 20px;
+}
+
+.column-labels, .board-row {
+  display: flex;
+}
+
+.column-label, .row-label {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #333;
+}
+
+.label-corner {
+  width: 30px;
+  height: 30px;
+}

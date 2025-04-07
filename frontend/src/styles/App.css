@@ -1,42 +1,81 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+.app-container {
+  padding: 0;
+  margin: 0;
+  min-height: 100vh;
+  background-color: #515de0;
+}
+
+.boards-container {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  padding: 1rem;
+  flex-wrap: wrap;
+}
+
+.player-board {
+  background-color: rgb(255, 255, 255);
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.agent-move-button {
+  margin: 1rem auto;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin: 30px 0;
+  padding: 0 20px;
+  margin-bottom: 80px;
+}
+
+
+.wave-button {
+  position: relative;
+  background: transparent;
+  color: #00173a;
+  border: 2px solid #00173a;
+  padding: 12px 40px; 
+  font-size: 18px; 
+  font-weight: bold;
+  border-radius: 50px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.3s;
+  z-index: 1;
+  min-width: 200px; 
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.wave-button span {
+  position: relative;
+  z-index: 2;
+  transition: color 0.3s;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.wave-button .wave {
+  position: absolute;
+  top: -50px;
+  left: 0;
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(to right, #0d47a1, #1976d2);
+  transform: skewY(-12deg);
+  transition: all 0.5s ease;
+  z-index: 1;
+  opacity: 0;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.wave-button:hover {
+  color: white;
+  border-color: #0d47a1;
 }
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+.wave-button:hover .wave {
+  top: -70px;
+  opacity: 1;
 }
